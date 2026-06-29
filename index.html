@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carbon Accounting Platform Intelligence — Amplio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.26.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f7f7f5;
+    --bg-tertiary: #f1efea;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-md: rgba(0,0,0,0.2);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --blue-50: #E6F1FB;
+    --blue-600: #185FA5;
+    --blue-800: #0C447C;
+    --purple-50: #EEEDFE;
+    --purple-600: #534AB7;
+    --teal-50: #E1F5EE;
+    --teal-600: #0F6E56;
+    --amber-50: #FAEEDA;
+    --amber-600: #854F0B;
+    --green-50: #EAF3DE;
+    --green-600: #3B6D11;
+    --coral-50: #FAECE7;
+    --coral-600: #993C1D;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #252523;
+      --bg-tertiary: #2e2e2b;
+      --text-primary: #f0ede6;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.1);
+      --border-md: rgba(255,255,255,0.2);
+    }
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .page-wrap { max-width: 880px; margin: 0 auto; }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .logo-lock { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 36px; height: 36px; border-radius: var(--radius-md);
+    background: var(--text-primary); display: flex; align-items: center;
+    justify-content: center; color: var(--bg); font-size: 14px; font-weight: 600;
+  }
+  .page-title { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+  .page-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .updated-badge {
+    font-size: 11px; color: var(--text-tertiary);
+    background: var(--bg-secondary); border: 0.5px solid var(--border);
+    border-radius: 20px; padding: 4px 12px; white-space: nowrap;
+  }
+
+  .summary-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 1.5rem;
+  }
+  .summary-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-md); padding: 12px 14px;
+  }
+  .summary-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+  .summary-note { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  .provider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 620px) {
+    .provider-grid { grid-template-columns: 1fr; }
+    .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .provider-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.25rem;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .provider-card.featured { border: 1.5px solid var(--green-600); }
+
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .name-row { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; flex-shrink: 0;
+  }
+  .card-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
+  .card-name:hover { text-decoration: underline; }
+  .card-domain { font-size: 12px; color: var(--text-tertiary); margin-top: 1px; }
+
+  .hs-badge {
+    font-size: 11px; font-weight: 500; padding: 3px 9px;
+    border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .hs-lead { background: var(--blue-50); color: var(--blue-800); }
+  .hs-none { background: var(--bg-secondary); color: var(--text-secondary); border: 0.5px solid var(--border); }
+
+  .value-prop { font-size: 13px; color: var(--text-secondary); line-height: 1.65; padding-bottom: 14px; border-bottom: 0.5px solid var(--border); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 11px; }
+  .stat-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+  .stat-value { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+
+  .icp-section { display: flex; flex-wrap: wrap; gap: 5px; }
+  .icp-label-prefix { font-size: 11px; color: var(--text-tertiary); padding-top: 3px; margin-right: 2px; flex-shrink: 0; }
+  .icp-tag { font-size: 11px; color: var(--text-secondary); border: 0.5px solid var(--border-md); border-radius: 20px; padding: 2px 9px; }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px; border-top: 0.5px solid var(--border);
+  }
+  .hq-info { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
+  .ext-link { font-size: 12px; color: var(--blue-600); text-decoration: none; display: flex; align-items: center; gap: 3px; }
+  .ext-link:hover { text-decoration: underline; }
+
+  .section-header { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .section-sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 1rem; }
+
+  .page-footer {
+    margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .footer-note { font-size: 11px; color: var(--text-tertiary); line-height: 1.7; max-width: 500px; }
+  .footer-brand { font-size: 12px; color: var(--text-tertiary); font-weight: 500; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="logo-lock">
+      <div class="logo-mark">A</div>
+      <div>
+        <div class="page-title">Carbon accounting platform intelligence</div>
+        <div class="page-sub">Competitive landscape · 3 providers · updated Jun 2026</div>
+      </div>
+    </div>
+    <div class="updated-badge"><i class="ti ti-refresh" style="font-size:11px;vertical-align:-1px;margin-right:3px"></i>Updated Jun 2026</div>
+  </div>
+
+  <div class="summary-strip">
+    <div class="summary-card">
+      <div class="summary-label">Providers tracked</div>
+      <div class="summary-value">3</div>
+      <div class="summary-note">Carbon accounting</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">In HubSpot</div>
+      <div class="summary-value">0</div>
+      <div class="summary-note">None in Amplio CRM</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Largest by funding</div>
+      <div class="summary-value">$185M</div>
+      <div class="summary-note">Watershed</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Most clients</div>
+      <div class="summary-value">3,500+</div>
+      <div class="summary-note">Greenly</div>
+    </div>
+  </div>
+
+  <div class="provider-grid">
+
+    <!-- Plan A -->
+    <div class="provider-card">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--teal-50);color:var(--teal-600)">PA</div>
+          <div>
+            <a href="https://plana.earth/" target="_blank" rel="noopener" class="card-name">Plan A</a>
+            <div class="card-domain">plana.earth · Berlin, Germany</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">End-to-end carbon accounting, decarbonisation planning, and ESG reporting platform. Automates emissions calculation across Scopes 1–3 and produces audit-ready regulatory reports. Acquired by Diginex in Dec 2025. B Corp certified and exclusive global partner to Visa.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~150</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" style="font-size:11px">Acquired by Diginex (Dec 2025)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">ICP-aligned clients</div>
+          <div class="stat-value" style="font-size:11px"><span style="color:var(--blue-600);font-weight:500">BMW</span> (auto) · BNP Paribas, Deutsche Bank (finance)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag" style="border-color:var(--blue-600);color:var(--blue-600)">Enterprise mfr</span>
+          <span class="icp-tag">Financial services</span>
+          <span class="icp-tag">EU-focused</span>
+          <span class="icp-tag">Mid-market</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Berlin, Germany · Private (Diginex)</div>
+        <a href="https://plana.earth/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+    <!-- Watershed -->
+    <div class="provider-card featured">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--blue-50);color:var(--blue-600)">WS</div>
+          <div>
+            <a href="https://watershed.com/" target="_blank" rel="noopener" class="card-name">Watershed</a>
+            <div class="card-domain">watershed.com · San Francisco, CA</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">Enterprise sustainability AI platform combining granular carbon accounting, reduction planning, and access to high-quality carbon removal projects. Verdantix 2026 Green Quadrant leader. Valued at $1.8B — the category's most well-funded independent platform.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~626</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total raised</div>
+          <div class="stat-value">$185M</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">ICP-aligned clients</div>
+          <div class="stat-value" style="font-size:11px">Enterprise — specific clients undisclosed</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag" style="border-color:var(--blue-600);color:var(--blue-600)">Large enterprise</span>
+          <span class="icp-tag" style="border-color:var(--blue-600);color:var(--blue-600)">Manufacturers</span>
+          <span class="icp-tag">Tech companies</span>
+          <span class="icp-tag">Financial services</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>San Francisco, CA · Private · $1.8B valuation</div>
+        <a href="https://watershed.com/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+    <!-- Greenly -->
+    <div class="provider-card">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--green-50);color:var(--green-600)">GL</div>
+          <div>
+            <a href="https://greenly.earth/" target="_blank" rel="noopener" class="card-name">Greenly</a>
+            <div class="card-domain">greenly.earth · Paris, France</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">AI-powered carbon accounting platform targeting SMBs and European mid-market businesses. Covers GHG assessment, life cycle analysis, and ESG management. Serves 3,500+ clients in 25 countries, managing 280M+ tons of CO2. Launched EcoPilot AI assistant in 2026.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">70+</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total raised</div>
+          <div class="stat-value">$78.5M</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Est. clients</div>
+          <div class="stat-value">3,500+</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag">SMB</span>
+          <span class="icp-tag">European mid-market</span>
+          <span class="icp-tag">Broad ESG coverage</span>
+          <span class="icp-tag">Accessibility-focused</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Paris, France · Private · Est. 2019</div>
+        <a href="https://greenly.earth/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Other players -->
+  <div style="margin-top:2rem">
+    <div class="section-header">Other players to consider</div>
+    <div class="section-sub">Carbon accounting market growing fast — $16B+ globally as mandatory climate disclosures accelerate.</div>
+
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">High priority</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px">
+          <div style="font-size:13px;font-weight:500;margin-bottom:2px"><a href="https://www.persefoni.com/" target="_blank" rel="noopener" style="color:var(--text-primary);text-decoration:none">Persefoni <i class="ti ti-external-link" style="font-size:11px;color:var(--text-tertiary)"></i></a></div>
+          <div style="font-size:11px;color:var(--text-tertiary)">AI-powered, audit-ready emissions for enterprise & financial institutions · GHGP/PCAF-aligned</div>
+        </div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px">
+          <div style="font-size:13px;font-weight:500;margin-bottom:2px"><a href="https://normative.io/" target="_blank" rel="noopener" style="color:var(--text-primary);text-decoration:none">Normative <i class="ti ti-external-link" style="font-size:11px;color:var(--text-tertiary)"></i></a></div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Science-based carbon accounting · strong in Scope 3 / supply chain emissions</div>
+        </div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px">
+          <div style="font-size:13px;font-weight:500;margin-bottom:2px"><a href="https://www.sweep.net/" target="_blank" rel="noopener" style="color:var(--text-primary);text-decoration:none">Sweep <i class="ti ti-external-link" style="font-size:11px;color:var(--text-tertiary)"></i></a></div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Data platform with AI + scenario modeling · Paris & London · growing enterprise base</div>
+        </div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px">
+          <div style="font-size:13px;font-weight:500;margin-bottom:2px"><a href="https://www.sinaitechnologies.com/" target="_blank" rel="noopener" style="color:var(--text-primary);text-decoration:none">Sinai Technologies <i class="ti ti-external-link" style="font-size:11px;color:var(--text-tertiary)"></i></a></div>
+          <div style="font-size:11px;color:var(--text-tertiary)">Decarbonisation strategy + carbon accounting · strong in heavy industry / manufacturing</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Worth monitoring</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <a href="https://www.ibm.com/products/envizi" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">IBM Envizi <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://www.microsoft.com/en-us/sustainability/cloud" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">Microsoft Sustainability Manager <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://www.emitwise.com/" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">Emitwise <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://www.terrascope.com/" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">Terrascope <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://avarni.co/" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">Avarni <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://www.carbonchain.com/" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">CarbonChain <i class="ti ti-external-link" style="font-size:10px"></i></a>
+        <a href="https://unravelcarbon.com/" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border-radius:20px;padding:4px 12px;text-decoration:none;border:0.5px solid var(--border)">Unravel Carbon <i class="ti ti-external-link" style="font-size:10px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-note">Firmographic data sourced from Crunchbase, ZoomInfo, Verdantix, and company websites. HubSpot status reflects Amplio CRM as of June 2026. Funding figures from Crunchbase.</div>
+    <div class="footer-brand">Amplio · Competitive Intel</div>
+  </div>
+
+</div>
+</body>
+</html>
